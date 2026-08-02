@@ -374,128 +374,121 @@
             </p>
         </div>
     </div>
+<!-- Keep everything the same, just update the script section -->
+<script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzNdyStJmZ4iJIiwti2ONEs7iShgfs9LfQZjPXJUJ66EBOi0eBUdziaM5EhBkH01cfaVw/exec';
 
-    <script>
-        // Configuration
-        
-        const API_URL = 'https://script.google.com/macros/s/AKfycbw1S7dDdkWPKWe8JI1u2OxXo7NnlW77aNT70W-DaYGsOzFx3pU8HQYI0OT056YULI6_Vg/exec'; // Replace with your deployed URL
+    createParticles();
 
-        // Create particles
-        function createParticles() {
-            const particles = document.getElementById('particles');
-            for(let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.width = Math.random() * 5 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 20 + 's';
-                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                particles.appendChild(particle);
+    function createParticles() {
+        const particles = document.getElementById('particles');
+        for(let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.width = Math.random() * 5 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            particles.appendChild(particle);
+        }
+    }
+
+    function openModal(type) {
+        document.getElementById(type + 'Modal').classList.add('active');
+    }
+
+    function closeModal(type) {
+        document.getElementById(type + 'Modal').classList.remove('active');
+    }
+
+    function switchModal(close, open) {
+        closeModal(close);
+        setTimeout(() => openModal(open), 300);
+    }
+
+    function showLoading() {
+        document.getElementById('loading').classList.add('active');
+    }
+
+    function hideLoading() {
+        document.getElementById('loading').classList.remove('active');
+    }
+
+    async function handleLogin(e) {
+        e.preventDefault();
+        const form = e.target;
+        const email = form[0].value;
+        const password = form[1].value;
+
+        showLoading();
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'login',
+                    email: email,
+                    password: password
+                })
+            });
+
+            const result = await response.json();
+            hideLoading();
+
+            if(result.success) {
+                localStorage.setItem('chatAppUser', JSON.stringify(result.data));
+                window.location.href = 'chat.html';
+            } else {
+                alert(result.message || 'Login failed');
             }
+        } catch(error) {
+            hideLoading();
+            alert('Error: ' + error.message);
         }
-        createParticles();
+    }
 
-        // Modal functions
-        function openModal(type) {
-            document.getElementById(type + 'Modal').classList.add('active');
-        }
+    async function handleRegister(e) {
+        e.preventDefault();
+        const form = e.target;
+        const username = form[0].value;
+        const email = form[1].value;
+        const password = form[2].value;
 
-        function closeModal(type) {
-            document.getElementById(type + 'Modal').classList.remove('active');
-        }
+        showLoading();
 
-        function switchModal(close, open) {
-            closeModal(close);
-            setTimeout(() => openModal(open), 300);
-        }
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'register',
+                    email: email,
+                    password: password,
+                    username: username
+                })
+            });
 
-        // Show/Hide loading
-        function showLoading() {
-            document.getElementById('loading').classList.add('active');
-        }
+            const result = await response.json();
+            hideLoading();
 
-        function hideLoading() {
-            document.getElementById('loading').classList.remove('active');
-        }
-
-        // Handle Login
-        async function handleLogin(e) {
-            e.preventDefault();
-            const form = e.target;
-            const email = form[0].value;
-            const password = form[1].value;
-
-            showLoading();
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'login',
-                        email: email,
-                        password: password
-                    })
-                });
-
-                const result = await response.json();
-                hideLoading();
-
-                if(result.success) {
-                    localStorage.setItem('chatAppUser', JSON.stringify(result.data));
-                    alert('Login successful! Redirecting to chat...');
-                    window.location.href = 'chat.html';
-                } else {
-                    alert(result.message || 'Login failed');
-                }
-            } catch(error) {
-                hideLoading();
-                alert('Error: ' + error.message);
+            if(result.success) {
+                alert('Registration successful! Please login.');
+                switchModal('register', 'login');
+                form.reset();
+            } else {
+                alert(result.message || 'Registration failed');
             }
+        } catch(error) {
+            hideLoading();
+            alert('Error: ' + error.message);
         }
+    }
 
-        // Handle Register
-        async function handleRegister(e) {
-            e.preventDefault();
-            const form = e.target;
-            const username = form[0].value;
-            const email = form[1].value;
-            const password = form[2].value;
-
-            showLoading();
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'register',
-                        email: email,
-                        password: password,
-                        username: username
-                    })
-                });
-
-                const result = await response.json();
-                hideLoading();
-
-                if(result.success) {
-                    alert('Registration successful! Please login.');
-                    switchModal('register', 'login');
-                } else {
-                    alert(result.message || 'Registration failed');
-                }
-            } catch(error) {
-                hideLoading();
-                alert('Error: ' + error.message);
-            }
+    window.onclick = function(event) {
+        if(event.target.classList.contains('modal')) {
+            event.target.classList.remove('active');
         }
-
-        // Close modal on outside click
-        window.onclick = function(event) {
-            if(event.target.classList.contains('modal')) {
-                event.target.classList.remove('active');
-            }
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
