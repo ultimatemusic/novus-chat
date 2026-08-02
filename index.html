@@ -3,6 +3,992 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ChatApp - Real-time messaging with AI assistance. Chat privately, create groups, and stay connected.">
+    <meta name="keywords" content="chat app, messaging, real-time chat, AI chat, group chat">
+    <title>ChatApp - Connect Instantly, Chat Freely</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<!--     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+ -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Gradient Background Animation */
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes blob {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(20px, -50px) scale(1.1);
+            }
+            50% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+            75% {
+                transform: translate(50px, 50px) scale(1.05);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .scale-in {
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Blob Animation */
+        .blob {
+            animation: blob 7s infinite;
+        }
+
+        /* Glass Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Card Hover Effects */
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            animation: scaleIn 0.3s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Particles */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float-particle 20s infinite;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) translateX(0);
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+            }
+        }
+
+        /* Navbar Scroll Effect */
+        .navbar {
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar.scrolled .nav-link {
+            color: #1f2937;
+        }
+
+        .navbar.scrolled .logo {
+            color: #667eea;
+        }
+
+        /* CTA Button Glow */
+        .cta-glow {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .cta-glow:hover {
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.8);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .feature-card {
+                margin-bottom: 20px;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+
+        /* Scroll Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            z-index: 10000;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar fixed w-full z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="logo text-white text-2xl font-bold flex items-center gap-2 slide-in-left">
+                    <span class="text-3xl">💬</span>
+                    <span>ChatApp</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center gap-8 slide-in-right">
+                    <a href="#home" class="nav-link text-white hover:text-purple-200 transition font-medium">Home</a>
+                    <a href="#features" class="nav-link text-white hover:text-purple-200 transition font-medium">Features</a>
+                    <a href="#how-it-works" class="nav-link text-white hover:text-purple-200 transition font-medium">How It Works</a>
+                    <a href="#testimonials" class="nav-link text-white hover:text-purple-200 transition font-medium">Testimonials</a>
+                    <button onclick="openModal('login')" class="text-white px-6 py-2 rounded-full hover:bg-white hover:bg-opacity-20 transition">
+                        Login
+                    </button>
+                    <button onclick="openModal('register')" class="bg-white text-purple-600 px-6 py-3 rounded-full hover:bg-purple-100 transition shadow-lg font-semibold cta-glow">
+                        Get Started Free
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-white text-2xl" onclick="toggleMobileMenu()">
+                    <span id="menuIcon">☰</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div class="mobile-menu hidden md:hidden mt-4 glass rounded-lg p-4" id="mobileMenu">
+                <a href="#home" class="block text-white py-2 hover:text-purple-200">Home</a>
+                <a href="#features" class="block text-white py-2 hover:text-purple-200">Features</a>
+                <a href="#how-it-works" class="block text-white py-2 hover:text-purple-200">How It Works</a>
+                <a href="#testimonials" class="block text-white py-2 hover:text-purple-200">Testimonials</a>
+                <button onclick="openModal('login')" class="w-full text-white border border-white py-2 rounded-lg mt-2 hover:bg-white hover:text-purple-600 transition">
+                    Login
+                </button>
+                <button onclick="openModal('register')" class="w-full bg-white text-purple-600 py-2 rounded-lg mt-2 font-semibold hover:bg-purple-100 transition">
+                    Get Started
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="gradient-bg min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+        <!-- Particles -->
+        <div class="particles" id="particles"></div>
+
+        <!-- Blob Shapes -->
+        <div class="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 blob"></div>
+        <div class="absolute top-40 right-10 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 blob" style="animation-delay: 2s"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 blob" style="animation-delay: 4s"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <!-- Left Content -->
+                <div class="lg:w-1/2 text-white slide-in-left">
+                    <div class="inline-block bg-white bg-opacity-20 rounded-full px-6 py-2 mb-6 backdrop-blur-sm">
+                        <span class="text-sm font-semibold">✨ #1 Free Chat Platform</span>
+                    </div>
+                    
+                    <h1 class="hero-title text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                        Connect With Anyone,
+                    </h1>
+                    
+                    <p class="text-xl lg:text-2xl mb-8 text-purple-100 leading-relaxed">
+                        Experience real-time messaging with AI assistance. Chat privately, create groups, and stay connected with friends and family.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 mb-12">
+                        <button onclick="openModal('register')" class="bg-white text-purple-600 px-8 py-4 rounded-full text-lg font-bold hover:bg-purple-100 transition shadow-2xl cta-glow transform hover:scale-105">
+</svg> Start Chatting Now
+                        </button>
+                        <button onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})" class="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-purple-600 transition">
+                            Learn More
+                        </button>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="stat-card text-center glass rounded-lg p-4">
+                            <div class="text-3xl font-bold">1M+</div>
+                            <div class="text-sm opacity-75">Active Users</div>
+                        </div>
+                        <div class="stat-card text-center glass rounded-lg p-4">
+                            <div class="text-3xl font-bold">24/7</div>
+                            <div class="text-sm opacity-75">AI Support</div>
+                        </div>
+                        <div class="stat-card text-center glass rounded-lg p-4">
+                            <div class="text-3xl font-bold">100%</div>
+                            <div class="text-sm opacity-75">Free</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Content - Mockup -->
+                <div class="lg:w-1/2 slide-in-right">
+                    <div class="relative float">
+                        <!-- Chat Interface Mockup -->
+                        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+                            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 flex items-center gap-3">
+                                <div class="w-10 h-10 bg-white rounded-full"></div>
+                                <div>
+                                    <div class="text-white font-semibold">John Doe</div>
+                                    <div class="text-purple-200 text-xs">Online</div>
+                                </div>
+                            </div>
+                            <div class="p-6 bg-gray-50 h-96 flex flex-col justify-end">
+                                <div class="space-y-4">
+                                    <div class="flex justify-end">
+                                        <div class="bg-purple-600 text-white rounded-2xl rounded-br-sm px-4 py-3 max-w-xs">
+                                            Hey! How are you? 👋
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-start">
+                                        <div class="bg-white rounded-2xl rounded-bl-sm px-4 py-3 max-w-xs shadow">
+                                            I'm great! This chat app is amazing! 🚀
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <div class="bg-purple-600 text-white rounded-2xl rounded-br-sm px-4 py-3 max-w-xs">
+                                            Right? Plus it has AI assistant! 🤖
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-white border-t flex gap-2">
+                                <div class="flex-1 bg-gray-100 rounded-full px-4 py-2 text-gray-500">
+                                    Type a message...
+                                </div>
+                                <button class="bg-purple-600 text-white w-12 h-12 rounded-full flex items-center justify-center">
+                                    ➤
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="text-5xl font-bold mb-4">
+                    Amazing <span class="gradient-text">Features</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Everything you need for seamless communication, all in one place
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in-up" style="animation-delay: 0.1s">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center text-3xl mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots" viewBox="0 0 16 16">
+                          <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                          <path d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Real-time Chat</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Send and receive messages instantly with our lightning-fast messaging system. Zero delays, pure connection.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-card bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in-up" style="animation-delay: 0.2s">
+                    <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl flex items-center justify-center text-3xl mb-6">
+                        👥
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Group Chats</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Create unlimited groups and chat with multiple people at once. Perfect for teams and friends.
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-card bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in-up" style="animation-delay: 0.3s">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center text-3xl mb-6">
+                        🤖
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">AI Assistant</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Chat with our Grok AI assistant for instant help, answers, and intelligent conversations 24/7.
+                    </p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="feature-card bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in-up" style="animation-delay: 0.4s">
+                    <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center text-3xl mb-6">
+                        😊
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Emoji Reactions</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Express yourself with emoji reactions. React to messages and add personality to conversations.
+                    </p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="feature-card bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in-up" style="animation-delay: 0.5s">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center text-3xl mb-6">
+                        ↩️
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Message Replies</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Reply directly to specific messages to keep conversations organized and context clear.
+                    </p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="feature-card bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in-up" style="animation-delay: 0.6s">
+                    <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl flex items-center justify-center text-3xl mb-6">
+                        🔒
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Secure & Private</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Your conversations are encrypted and private. We never share your data with third parties.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-20 bg-gradient-to-br from-purple-50 to-indigo-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold mb-4">
+                    How It <span class="gradient-text">Works</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Get started in 3 simple steps
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Step 1 -->
+                <div class="text-center fade-in-up" style="animation-delay: 0.1s">
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-3xl text-white mx-auto mb-6 shadow-lg">
+                        1
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Sign Up Free</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Create your account in seconds with just your email. No Mobile No. required.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="text-center fade-in-up" style="animation-delay: 0.3s">
+                    <div class="w-20 h-20 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full flex items-center justify-center text-3xl text-white mx-auto mb-6 shadow-lg">
+                        2
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Find Friends</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Search for friends by email or username and start chatting instantly.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="text-center fade-in-up" style="animation-delay: 0.5s">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center text-3xl text-white mx-auto mb-6 shadow-lg">
+                        3
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">Start Chatting</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Send messages, create groups, and enjoy seamless communication.
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <button onclick="openModal('register')" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-10 py-4 rounded-full text-lg font-bold hover:shadow-2xl transform hover:scale-105 transition cta-glow">
+                    Get Started Now - It's Free! 🎉
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold mb-4">
+                    What People <span class="gradient-text">Say</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Join thousands of happy users
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in-up" style="animation-delay: 0.1s">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full"></div>
+                        <div>
+                            <div class="font-bold text-gray-800">Sarah Johnson</div>
+                            <div class="text-sm text-gray-500">Marketing Manager</div>
+                        </div>
+                    </div>
+                    <div class="text-yellow-500 text-2xl mb-3">⭐⭐⭐⭐⭐</div>
+                    <p class="text-gray-600 leading-relaxed">
+                        "Best chat app I've used! The AI assistant is incredibly helpful and the interface is beautiful."
+                    </p>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in-up" style="animation-delay: 0.3s">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full"></div>
+                        <div>
+                            <div class="font-bold text-gray-800">Michael Chen</div>
+                            <div class="text-sm text-gray-500">Software Developer</div>
+                        </div>
+                    </div>
+                    <div class="text-yellow-500 text-2xl mb-3">⭐⭐⭐⭐⭐</div>
+                    <p class="text-gray-600 leading-relaxed">
+                        "Fast, reliable, and feature-rich. Perfect for both personal and team communication."
+                    </p>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in-up" style="animation-delay: 0.5s">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full"></div>
+                        <div>
+                            <div class="font-bold text-gray-800">Emily Rodriguez</div>
+                            <div class="text-sm text-gray-500">Student</div>
+                        </div>
+                    </div>
+                    <div class="text-yellow-500 text-2xl mb-3">⭐⭐⭐⭐⭐</div>
+                    <p class="text-gray-600 leading-relaxed">
+                        "Love how easy it is to use! Group chats make studying with friends so much better."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="gradient-bg py-20 relative overflow-hidden">
+        <div class="particles" id="particles2"></div>
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h2 class="text-5xl font-bold text-white mb-6">
+                Ready to Start Chatting?
+            </h2>
+            <p class="text-2xl text-purple-100 mb-8 max-w-2xl mx-auto">
+                Join millions of users and experience the future of messaging
+            </p>
+            <button onclick="openModal('register')" class="bg-white text-purple-600 px-12 py-5 rounded-full text-xl font-bold hover:bg-purple-100 transition shadow-2xl cta-glow transform hover:scale-105">
+                Sign Up Free - No Mobile No. Required 🚀
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="text-2xl font-bold mb-4 flex items-center gap-2">
+                        <span>💬</span> ChatApp
+                    </div>
+                    <p class="text-gray-400">
+                        The best way to stay connected with friends and family.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Product</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#features" class="hover:text-white transition">Features</a></li>
+                        <li><a href="#how-it-works" class="hover:text-white transition">How It Works</a></li>
+                        <li><a href="#" class="hover:text-white transition">Pricing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Company</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">About Us</a></li>
+                        <li><a href="#" class="hover:text-white transition">Blog</a></li>
+                        <li><a href="#" class="hover:text-white transition">Careers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 ChatApp. All rights reserved. Made with ❤️ for better communication.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content bg-white rounded-3xl p-8 w-full max-w-md scale-in">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Welcome Back! 👋</h2>
+                <button onclick="closeModal('login')" class="text-gray-500 hover:text-gray-700 text-3xl leading-none">
+                    ×
+                </button>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2 font-semibold">Email Address</label>
+                    <input type="email" required
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:border-purple-500 transition"
+                           placeholder="your@email.com">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2 font-semibold">Password</label>
+                    <input type="password" required
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:border-purple-500 transition"
+                           placeholder="••••••••">
+                </div>
+                <button type="submit"
+                        class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-2xl transition transform hover:scale-105 cta-glow">
+                    Login to ChatApp
+                </button>
+            </form>
+            <p class="text-center mt-6 text-gray-600">
+                Don't have an account? 
+                <a href="#" onclick="switchModal('login', 'register')" class="text-purple-600 font-bold hover:underline">Sign Up Free</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content bg-white rounded-3xl p-8 w-full max-w-md scale-in">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Join ChatApp! 🎉</h2>
+                <button onclick="closeModal('register')" class="text-gray-500 hover:text-gray-700 text-3xl leading-none">
+                    ×
+                </button>
+            </div>
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2 font-semibold">Username</label>
+                    <input type="text" required
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:border-purple-500 transition"
+                           placeholder="johndoe">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2 font-semibold">Email Address</label>
+                    <input type="email" required
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:border-purple-500 transition"
+                           placeholder="your@email.com">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2 font-semibold">Password</label>
+                    <input type="password" required
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:border-purple-500 transition"
+                           placeholder="••••••••">
+                </div>
+                <button type="submit"
+                        class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-2xl transition transform hover:scale-105 cta-glow">
+                    Create Free Account
+                </button>
+            </form>
+            <p class="text-center mt-6 text-gray-600">
+                Already have an account? 
+                <a href="#" onclick="switchModal('register', 'login')" class="text-purple-600 font-bold hover:underline">Login Here</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzPWuiokNbyIVtVY-Ate0q0iLlG3V2jhsm3py2tar9_svNCayvRZCGx_l8NpoPvYyML/exec'; // ⭐ REPLACE WITH YOUR URL
+
+        // Create particles
+        function createParticles(containerId) {
+            const container = document.getElementById(containerId);
+            if(!container) return;
+            
+            for(let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 5 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        createParticles('particles');
+        createParticles('particles2');
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if(window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            // Progress bar
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('menuIcon');
+            
+            if(menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.textContent = '✕';
+            } else {
+                menu.classList.add('hidden');
+                icon.textContent = '☰';
+            }
+        }
+
+        // Modal functions
+        function openModal(type) {
+            document.getElementById(type + 'Modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(type) {
+            document.getElementById(type + 'Modal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function switchModal(close, open) {
+            closeModal(close);
+            setTimeout(() => openModal(open), 300);
+        }
+
+        function showLoading() {
+            document.getElementById('loading').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').classList.remove('active');
+        }
+
+        // Handle Login
+        async function handleLogin(e) {
+            e.preventDefault();
+            const form = e.target;
+            const email = form[0].value;
+            const password = form[1].value;
+
+            showLoading();
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'login',
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+                hideLoading();
+
+                if(result.success) {
+                    localStorage.setItem('chatAppUser', JSON.stringify(result.data));
+                    window.location.href = 'chat.html';
+                } else {
+                    alert('❌ ' + (result.message || 'Login failed'));
+                }
+            } catch(error) {
+                hideLoading();
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        // Handle Register
+        async function handleRegister(e) {
+            e.preventDefault();
+            const form = e.target;
+            const username = form[0].value;
+            const email = form[1].value;
+            const password = form[2].value;
+
+            showLoading();
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'register',
+                        email: email,
+                        password: password,
+                        username: username
+                    })
+                });
+
+                const result = await response.json();
+                hideLoading();
+
+                if(result.success) {
+                    alert('✅ Registration successful! Please login.');
+                    switchModal('register', 'login');
+                    form.reset();
+                } else {
+                    alert('❌ ' + (result.message || 'Registration failed'));
+                }
+            } catch(error) {
+                hideLoading();
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if(event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Close mobile menu on link click
+        document.querySelectorAll('.mobile-menu a').forEach(link => {
+            link.addEventListener('click', function() {
+                toggleMobileMenu();
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if(target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChatApp - Connect Instantly</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
