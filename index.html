@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatApp - Connect Instantly</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Particle background */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float-particle 20s infinite;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) translateX(0);
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+            }
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Particles Background -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="relative z-10 glass-effect">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-white text-2xl font-bold slide-in-left">
+                    💬 ChatApp
+                </div>
+                <div class="space-x-4 slide-in-right">
+                    <button onclick="openModal('login')" 
+                            class="text-white px-6 py-2 rounded-full hover:bg-white hover:text-purple-600 transition duration-300">
+                        Login
+                    </button>
+                    <button onclick="openModal('register')" 
+                            class="bg-white text-purple-600 px-6 py-2 rounded-full hover:bg-purple-100 transition duration-300 shadow-lg">
+                        Sign Up
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative z-10 container mx-auto px-6 py-20">
+        <div class="flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 text-white slide-in-left">
+                <h1 class="text-6xl font-bold mb-6">
+                    Connect With Anyone, Anywhere
+                </h1>
+                <p class="text-xl mb-8 text-purple-100">
+                    Experience real-time messaging with AI assistance. Chat privately, create groups, and stay connected.
+                </p>
+                <button onclick="openModal('register')" 
+                        class="bg-white text-purple-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-purple-100 transition duration-300 shadow-2xl transform hover:scale-105">
+                    Get Started Free
+                </button>
+            </div>
+            <div class="md:w-1/2 mt-12 md:mt-0 slide-in-right">
+                <div class="float-animation">
+                    <svg viewBox="0 0 500 500" class="w-full">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0.3" />
+                                <stop offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:0.1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="250" cy="250" r="200" fill="url(#grad1)"/>
+                        <circle cx="250" cy="250" r="150" fill="url(#grad1)"/>
+                        <circle cx="250" cy="250" r="100" fill="url(#grad1)"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="relative z-10 container mx-auto px-6 py-20">
+        <h2 class="text-4xl font-bold text-white text-center mb-16 fade-in-up">
+            Amazing Features
+        </h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="feature-card glass-effect rounded-2xl p-8 text-white fade-in-up" style="animation-delay: 0.1s">
+                <div class="text-5xl mb-4">⚡</div>
+                <h3 class="text-2xl font-bold mb-3">Real-time Chat</h3>
+                <p class="text-purple-100">Send and receive messages instantly with our fast messaging system.</p>
+            </div>
+            <div class="feature-card glass-effect rounded-2xl p-8 text-white fade-in-up" style="animation-delay: 0.2s">
+                <div class="text-5xl mb-4">👥</div>
+                <h3 class="text-2xl font-bold mb-3">Group Chats</h3>
+                <p class="text-purple-100">Create groups and chat with multiple people at once.</p>
+            </div>
+            <div class="feature-card glass-effect rounded-2xl p-8 text-white fade-in-up" style="animation-delay: 0.3s">
+                <div class="text-5xl mb-4">🤖</div>
+                <h3 class="text-2xl font-bold mb-3">AI Assistant</h3>
+                <p class="text-purple-100">Chat with our Grok AI assistant for instant help and answers.</p>
+            </div>
+            <div class="feature-card glass-effect rounded-2xl p-8 text-white fade-in-up" style="animation-delay: 0.4s">
+                <div class="text-5xl mb-4">😊</div>
+                <h3 class="text-2xl font-bold mb-3">Reactions</h3>
+                <p class="text-purple-100">React to messages with emojis and express yourself.</p>
+            </div>
+            <div class="feature-card glass-effect rounded-2xl p-8 text-white fade-in-up" style="animation-delay: 0.5s">
+                <div class="text-5xl mb-4">↩️</div>
+                <h3 class="text-2xl font-bold mb-3">Reply to Messages</h3>
+                <p class="text-purple-100">Reply directly to specific messages in conversations.</p>
+            </div>
+            <div class="feature-card glass-effect rounded-2xl p-8 text-white fade-in-up" style="animation-delay: 0.6s">
+                <div class="text-5xl mb-4">🔒</div>
+                <h3 class="text-2xl font-bold mb-3">Secure & Private</h3>
+                <p class="text-purple-100">Your conversations are private and secure.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content bg-white rounded-2xl p-8 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Welcome Back</h2>
+                <button onclick="closeModal('login')" class="text-gray-500 hover:text-gray-700 text-2xl">
+                    ×
+                </button>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2 font-semibold">Email</label>
+                    <input type="email" required
+                           class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-purple-500"
+                           placeholder="your@email.com">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2 font-semibold">Password</label>
+                    <input type="password" required
+                           class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-purple-500"
+                           placeholder="••••••••">
+                </div>
+                <button type="submit"
+                        class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition duration-300 shadow-lg">
+                    Login
+                </button>
+            </form>
+            <p class="text-center mt-4 text-gray-600">
+                Don't have an account? 
+                <a href="#" onclick="switchModal('login', 'register')" class="text-purple-600 font-semibold">Sign Up</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content bg-white rounded-2xl p-8 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Create Account</h2>
+                <button onclick="closeModal('register')" class="text-gray-500 hover:text-gray-700 text-2xl">
+                    ×
+                </button>
+            </div>
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2 font-semibold">Username</label>
+                    <input type="text" required
+                           class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-purple-500"
+                           placeholder="johndoe">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2 font-semibold">Email</label>
+                    <input type="email" required
+                           class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-purple-500"
+                           placeholder="your@email.com">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2 font-semibold">Password</label>
+                    <input type="password" required
+                           class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-purple-500"
+                           placeholder="••••••••">
+                </div>
+                <button type="submit"
+                        class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition duration-300 shadow-lg">
+                    Sign Up
+                </button>
+            </form>
+            <p class="text-center mt-4 text-gray-600">
+                Already have an account? 
+                <a href="#" onclick="switchModal('register', 'login')" class="text-purple-600 font-semibold">Login</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwdqK4JlCjrAnegcpvLPtfrD5WECkJSOg2mk-GsblV5kS7OCoL16lvgkaocV7eOd70/exec'; // Replace with your deployed URL
+
+        // Create particles
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            for(let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 5 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particles.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Modal functions
+        function openModal(type) {
+            document.getElementById(type + 'Modal').classList.add('active');
+        }
+
+        function closeModal(type) {
+            document.getElementById(type + 'Modal').classList.remove('active');
+        }
+
+        function switchModal(close, open) {
+            closeModal(close);
+            setTimeout(() => openModal(open), 300);
+        }
+
+        // Show/Hide loading
+        function showLoading() {
+            document.getElementById('loading').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').classList.remove('active');
+        }
+
+        // Handle Login
+        async function handleLogin(e) {
+            e.preventDefault();
+            const form = e.target;
+            const email = form[0].value;
+            const password = form[1].value;
+
+            showLoading();
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'login',
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+                hideLoading();
+
+                if(result.success) {
+                    localStorage.setItem('chatAppUser', JSON.stringify(result.data));
+                    alert('Login successful! Redirecting to chat...');
+                    window.location.href = 'chat.html';
+                } else {
+                    alert(result.message || 'Login failed');
+                }
+            } catch(error) {
+                hideLoading();
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Handle Register
+        async function handleRegister(e) {
+            e.preventDefault();
+            const form = e.target;
+            const username = form[0].value;
+            const email = form[1].value;
+            const password = form[2].value;
+
+            showLoading();
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'register',
+                        email: email,
+                        password: password,
+                        username: username
+                    })
+                });
+
+                const result = await response.json();
+                hideLoading();
+
+                if(result.success) {
+                    alert('Registration successful! Please login.');
+                    switchModal('register', 'login');
+                } else {
+                    alert(result.message || 'Registration failed');
+                }
+            } catch(error) {
+                hideLoading();
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if(event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
